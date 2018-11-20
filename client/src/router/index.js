@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import Index from '../components/page/Index';
-import Admin from '../components/page/Admin';
+import Index from '../page/Index';
+import Admin from '../page/Admin';
 
 Vue.use(Router);
 

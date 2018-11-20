@@ -1,14 +1,14 @@
 <template>
   <div class="app">
     <el-row>
-      <el-col :xs="1" :sm="2" :md="3" :lg="4" :xl="5"><div class="margin"></div></el-col>
-      <el-col :xs="22" :sm="20" :md="18" :lg="16" :xl="14">
+      <el-col :xs="3" :sm="4" :md="5" :lg="6" :xl="7"><div class="placeholder"></div></el-col>
+      <el-col :xs="18" :sm="16" :md="14" :lg="12" :xl="10">
         <div>
           <div class="placeholder"></div>
           <router-view></router-view>
         </div>
       </el-col>
-      <el-col :xs="1" :sm="2" :md="3" :lg="4" :xl="5"><div class="margin"></div></el-col>
+      <el-col :xs="3" :sm="4" :md="5" :lg="6" :xl="7"><div class="placeholder"></div></el-col>
     </el-row>
   </div>
 </template>
@@ -20,6 +20,11 @@ export default {
 </script>
 
 <style>
+@font-face {
+  font-family: Anurati;
+  src: url('./assets/Anurati-Regular.otf');
+}
+
 * {
   font-family: 'Microsoft Yahei', 'Avenir', Helvetica, Arial, sans-serif;
 }
@@ -27,10 +32,6 @@ export default {
 body {
   margin: 0;
   padding: 0;
-}
-
-.margin {
-  height: 1px;
 }
 
 .placeholder {
