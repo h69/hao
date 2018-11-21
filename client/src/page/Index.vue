@@ -8,8 +8,9 @@
     </div>
 
     <!-- 搜索栏 -->
-    <el-input class="search" placeholder="请输入搜索内容" v-model="input" @keyup.enter.native="onSearch">
+    <el-input class="search" placeholder="请输入搜索内容" spellcheck="false" v-model="input" @keyup.enter.native="onSearch">
       <el-select v-model="engine" slot="prepend" placeholder="搜索引擎" @change="onSearch">
+        <el-option label="全网" value="all"></el-option>
         <el-option label="Google" value="google"></el-option>
         <el-option label="百度" value="baidu"></el-option>
         <el-option label="必应" value="bing"></el-option>
@@ -66,7 +67,9 @@ export default {
   methods: {
     onSearch: function () {
       if (this.input) {
-        if (this.engine === 'google') {
+        if (this.engine === 'all') {
+          window.open(`./#/browser?q=${this.input}`);
+        } else if (this.engine === 'google') {
           window.open(`https://www.google.com/search?q=${this.input}`);
         } else if (this.engine === 'baidu') {
           window.open(`https://www.baidu.com/s?wd=${this.input}`);  
