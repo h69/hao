@@ -1,72 +1,64 @@
-const fs = require('fs');
+const dao = require('../dao/dao');
 
-function write(data) {
-  let object = {};
-  for (let i = 0; i < data.length; i++) {
-    let group = data[i].group;
+function submit(data, callback) {
+  dao.insert(data, function (msg) {
+    callback(msg);
+  });
+}
 
-    if (!object[group]) {
-      object[group] = [];
-    }
+function getAdminData(callback) {
+  dao.query(function (rows) {
+    let data = [];
 
-    object[group].push({ 
-      group: data[i].group,
-      title: data[i].title,
-      href: data[i].href,
-      content: data[i].content
-    });
-  }
-
-  let items = [];
-  for (let key in object) {
-    for (let i = 0; i < object[key].length; i++) {
-      items.push({ 
-        group: object[key][i].group,
-        title: object[key][i].title,
-        href: object[key][i].href,
-        content: object[key][i].content
+    for (let i = 0; i < rows.length; i++) {
+      data.push({
+        label: rows[i].f_label,
+        name: rows[i].f_name,
+        href: rows[i].f_href
       });
     }
-  }
 
-  fs.writeFileSync('./data/data.json', JSON.stringify(items));
+    callback(JSON.stringify(data));
+  });
 }
 
-function read() {
-  return fs.readFileSync('./data/data.json');
-}
+function getIndexData(callback) {
+  dao.query(function (rows) {
+    let data = [];
 
-function get() {
-  let array = JSON.parse(read());
-  
-  let object = {};
-  for (let i = 0; i < array.length; i++) {
-    let group = array[i].group;
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].f_label && rows[i].f_name && rows[i].f_href) {
+        let flag = true;
+        
+        for (let j = 0; j < data.length; j++) {
+          if (data[j].label === rows[i].f_label) {
+            data[j].data.push({
+              name: rows[i].f_name,
+              href: rows[i].f_href
+            });
+            flag = false;
+            break;
+          } 
+        }
 
-    if (!object[group]) {
-      object[group] = [];
+        if (flag) {
+          data.push({
+            label: rows[i].f_label,
+            data: [{
+              name: rows[i].f_name,
+              href: rows[i].f_href
+            }]
+          });
+        }
+      }
     }
 
-    object[group].push({ 
-      title: array[i].title,
-      href: array[i].href,
-      content: array[i].content
-    });
-  }
-
-  let items = [];
-  for (let key in object) {
-    items.push({
-      group: key,
-      items: object[key]
-    });
-  }
-
-  return JSON.stringify(items);
+    callback(JSON.stringify(data));
+  });
 }
 
 module.exports = {
-  write: write,
-  read : read,
-  get: get
+  submit: submit,
+  getAdminData : getAdminData,
+  getIndexData: getIndexData
 };

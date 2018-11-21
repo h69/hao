@@ -1,38 +1,33 @@
 <template>
   <div class="admin">
-    <el-table :data="items">
-      <el-table-column label="Group">
+    <el-table :data="data">
+      <el-table-column label="网站标签">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.group" @input="onGroup(scope)" spellcheck="false"></el-input>
+          <el-input v-model="scope.row.label" spellcheck="false"></el-input>
         </template>
       </el-table-column>
 
-      <el-table-column label="Title">
+      <el-table-column label="网站名称">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.title" @input="onTitle(scope)" spellcheck="false"></el-input>
+          <el-input v-model="scope.row.name" spellcheck="false"></el-input>
         </template>
       </el-table-column>
 
-      <el-table-column label="Href">
+      <el-table-column label="网站地址">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.href"  @input="onHref(scope) " spellcheck="false"></el-input>
+          <el-input v-model="scope.row.href" spellcheck="false"></el-input>
         </template>
       </el-table-column>
 
-      <el-table-column label="Content">
+      <el-table-column width="160">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.content" @input="onContent(scope)" spellcheck="false"></el-input>
+          <el-button size="mini" @click="onAdd(scope)">添加</el-button>
+          <el-button size="mini" type="danger" @click="onDelete(scope)">删除</el-button>
         </template>
       </el-table-column>
-
-      <el-table-column width="80">
-      <template slot-scope="scope">
-        <el-button size="mini" type="danger" @click="onDelete(scope)">删除</el-button>
-      </template>
-     </el-table-column>
     </el-table>
 
-    <el-button class="write" size="mini" icon="el-icon-upload" @click="onWrite">同步<i ></i></el-button>
+    <el-button class="submit" type="primary" @click="onSubmit">提交</el-button>
   </div>
 </template>
 
@@ -41,110 +36,74 @@ export default {
   name: 'Admin',
   data: function () {
     return {
-      items: []
+      data: []
     };
   },
   methods: {
     getDefaultData: function () {
       return { 
-        group: '',
-        title: '',
+        label: '',
+        name: '',
         href: '', 
-        content: '' 
       };
     },
-    onGroup: function (scope) {
-      if (scope.$index == this.items.length - 1) {
-        this.items.push(this.getDefaultData());
-      }
-    },
-    onTitle: function (scope) {
-      if (scope.$index == this.items.length - 1) {
-        this.items.push(this.getDefaultData());
-      }
-    },
-    onHref: function (scope) {
-      if (scope.$index == this.items.length - 1) {
-        this.items.push(this.getDefaultData());
-      }
-    },
-    onContent: function (scope) {
-      if (scope.$index == this.items.length - 1) {
-        this.items.push(this.getDefaultData());
-      }
+    onAdd: function (scope) {
+      this.data.splice(scope.$index + 1, 0, this.getDefaultData());
     },
     onDelete: function (scope) {
-      this.items.splice(scope.$index, 1);
+      this.data.splice(scope.$index, 1);
 
-      if (this.items.length == 0) {
-         this.items.push(this.getDefaultData());
+      if (this.data.length == 0) {
+        this.data.push(this.getDefaultData());
       }
     },
-    onWrite: function () {
+    onSubmit: function () {
       var params = {
-        items: this.items,
-        token: this.$route.query.token
+        data: this.data,
+        p: this.$route.query.p
       };
  
       var $this = this;
-      this.$http.post('/api/write', params).then(function (response) { 
+      this.$http.post('/api/submit', params).then(function (response) { 
         if (response.body == 'forbidden') {
-          $this.$notify({ message: '无访问权限' });
+          $this.$message({ message: '无访问权限', type: 'error' });
           return;
         }
 
         if (response.body == 'success') {
-          $this.$notify({ message: '同步成功' });
+          $this.$message({ message: '提交成功', type: 'success' });
         } else {
-          $this.$notify({ message: '同步失败' });
+          $this.$message({ message: '提交失败', type: 'error' });
         }
       });
     }
   },
   created: function () {
     var params = {
-      token: this.$route.query.token
+      p: this.$route.query.p
     };
 
     var $this = this;
-    this.$http.post('/api/read', params).then(function (response) { 
+    this.$http.post('/api/getAdminData', params).then(function (response) { 
       if (response.body == 'forbidden') {
-        $this.$notify({ message: '无访问权限' });
+        $this.$message({ message: '无访问权限', type: 'error' });
         return;
-      } else {
-        $this.$notify({ message: '验证通过' });
-      }
+      } 
 
-      if (response.body == undefined || response.body == '') {
-        $this.items.push($this.getDefaultData());
+      if (response.body == undefined || response.body.length === 0) {
+        $this.data.push($this.getDefaultData());
       } else {
-        $this.items = response.body;
+        $this.data = response.body;
       }
     });
   }
-
 };
 </script>
 
 <style>
-div.admin div.part {
-  margin-bottom: 100px;
-}
-
-div.admin p.group {
-  font-size: 2.0em;
-}
-
-div.admin a { 
-  text-decoration: none;
-}
-
-div.admin a:visited {   
-  color: #409eff;   
-}   
-
-div.admin .write {
+.admin .submit {
   margin-top: 50px;
+  margin-bottom: 50px;
   float: right;
 }
 </style>

@@ -8,7 +8,7 @@
     </div>
 
     <!-- 搜索栏 -->
-    <el-input class="search" placeholder="请输入内容" v-model="input" @keyup.enter.native="onSearch">
+    <el-input class="search" placeholder="请输入搜索内容" v-model="input" @keyup.enter.native="onSearch">
       <el-select v-model="engine" slot="prepend" placeholder="搜索引擎" @change="onSearch">
         <el-option label="Google" value="google"></el-option>
         <el-option label="百度" value="baidu"></el-option>
@@ -23,7 +23,7 @@
     </el-input>
 
     <!-- 常用网址 -->
-    <el-tabs class="website">
+    <el-tabs class="website" v-model="currentTabName" @tab-click="onTabClick">
       <el-tab-pane v-for="(item, index) in data" :key="index" :label="item.label">
         <el-row v-for="row in Math.ceil(item.data.length / cols)" :key="row">
           <el-col v-for="col in cols" :key="col" v-if="(col - 1) + (row - 1) * cols < item.data.length" :span="24 / cols">
@@ -40,49 +40,28 @@ export default {
   name: 'Index',
   data: function () {
     return {
-      engine: 'google',
+      engine: '',
       input: '',
+      currentTabName: '',
       cols: 3,
-      data: [{
-        label: '部门平台',
-        data: [
-          {
-            name: '腾讯网',
-            href: 'http://www.qq.com'
-          },
-          {
-            name: '百度一下，你就知道',
-            href: 'http://www.baidu.com'
-          },
-           {
-            name: '腾讯网',
-            href: 'www.qq.com'
-          },
-          {
-            name: '百度一下，你就知道',
-            href: 'www.baidu.com'
-          },
-          {
-            name: '腾讯网',
-            href: 'www.qq.com'
-          },
-         
-        ]
-      },
-      {
-        label: '公司平台',
-        data: [
-        ]
-      },
-      ]
+      data: []
     }
   },
   created: function () {
     var $this = this;
 
-    // this.$http.post('/api/get').then(function (response) { 
-    //   $this.items = response.body;
-    // });
+    this.$http.post('/api/getIndexData').then(function (response) { 
+      $this.data = response.body;
+
+      if (window.localStorage.getItem('currentTabName')) {
+        $this.currentTabName = window.localStorage.getItem('currentTabName') > $this.data.length - 1 ? '0' : window.localStorage.getItem('currentTabName');
+      } else {
+        $this.currentTabName = '0';
+      }
+      window.localStorage.setItem('currentTabName', $this.currentTabName);
+    });
+
+    this.engine = window.localStorage.getItem('engine');
   },
   methods: {
     onSearch: function () {
@@ -102,7 +81,12 @@ export default {
         } else if (this.engine === 'github') {
           window.open(`https://www.github.com/search?q=${this.input}`);
         }
-      }        
+      } 
+      
+      window.localStorage.setItem('engine', this.engine);
+    },
+    onTabClick: function () {
+      window.localStorage.setItem('currentTabName', this.currentTabName);
     }
   }
 };
@@ -137,7 +121,7 @@ export default {
 
 .index .search .el-input-group__prepend {
   background-color: #fff;
-  width: 60px;
+  width: 70px;
 }
 
 .index .website {
