@@ -17,9 +17,7 @@ function query(callback) {
         } 
         connection.release();
       });
-    } else {
-      connection.release();
-    }
+    } 
   });
 }
 
@@ -44,12 +42,10 @@ function insert(data, callback) {
           });
         } else {
           callback('failure');
-          connection.release();
         }
       });
     } else {
       callback('failure');
-      connection.release();
     }
   });
 }

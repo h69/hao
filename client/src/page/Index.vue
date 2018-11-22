@@ -8,16 +8,43 @@
     </div>
 
     <!-- 搜索栏 -->
-    <el-input class="search" placeholder="请输入搜索内容" spellcheck="false" v-model="input" @keyup.enter.native="onSearch">
-      <el-select v-model="engine" slot="prepend" placeholder="搜索引擎" @change="onSearch">
-        <el-option label="全网" value="all"></el-option>
-        <el-option label="Google" value="google"></el-option>
-        <el-option label="百度" value="baidu"></el-option>
-        <el-option label="必应" value="bing"></el-option>
-        <el-option label="搜狗" value="sougou"></el-option>
-        <el-option label="知乎" value="zhihu"></el-option>
-        <el-option label="KM" value="km"></el-option>
-        <el-option label="GitHub" value="github"></el-option>
+    <el-input class="search" placeholder="请输入搜索内容" spellcheck="false" autofocus="true" v-model="input" @keyup.enter.native="onSearch">
+      <el-select v-model="engine" slot="prepend" placeholder="请选择" @change="onSearch">
+        <el-option-group label="搜索">
+          <el-option label="Google" value="google"></el-option>
+          <el-option label="百度" value="baidu"></el-option>
+          <el-option label="必应" value="bing"></el-option>
+        </el-option-group>
+
+        <el-option-group label="开发">
+          <el-option label="GitHub" value="github"></el-option>
+          <el-option label="SegmentFault" value="segmentfault"></el-option>
+          <el-option label="StackOverflow" value="stackoverflow"></el-option>
+        </el-option-group>
+
+        <el-option-group label="设计">
+          <el-option label="Dribbble" value="dribbble"></el-option>
+          <el-option label="IconFont" value="iconfont"></el-option>
+          <el-option label="花瓣" value="huaban"></el-option>
+        </el-option-group>
+
+        <el-option-group label="百科">
+          <el-option label="知乎" value="zhihu"></el-option>
+          <el-option label="KM" value="km"></el-option>
+          <el-option label="WiKi" value="wiki"></el-option>
+        </el-option-group>
+
+        <el-option-group label="热点">
+          <el-option label="Twitter" value="twitter"></el-option>
+          <el-option label="微博" value="weibo"></el-option>
+          <el-option label="今日头条" value="toutiao"></el-option>
+        </el-option-group>
+
+        <el-option-group label="视频">
+          <el-option label="YouTube" value="youtube"></el-option>
+          <el-option label="腾讯视频" value="v"></el-option>
+          <el-option label="哔哩哔哩" value="bilibili"></el-option>
+        </el-option-group>
       </el-select>
       
       <el-button slot="append" icon="el-icon-search" @click="onSearch"></el-button>
@@ -67,22 +94,42 @@ export default {
   methods: {
     onSearch: function () {
       if (this.input) {
-        if (this.engine === 'all') {
-          window.open(`./#/browser?q=${this.input}`);
-        } else if (this.engine === 'google') {
-          window.open(`https://www.google.com/search?q=${this.input}`);
+        if (this.engine === 'google') {
+          this.goto('https://www.google.com/search?q=');
         } else if (this.engine === 'baidu') {
-          window.open(`https://www.baidu.com/s?wd=${this.input}`);  
+          this.goto('https://www.baidu.com/s?wd=');
         } else if (this.engine === 'bing') {
-          window.open(`https://cn.bing.com/search?q=${this.input}`);  
-        } else if (this.engine === 'sougou') {
-          window.open(`https://www.sogou.com/web?query=${this.input}`);  
-        } else if (this.engine === 'zhihu') {
-          window.open(`https://www.zhihu.com/search?q=${this.input}`);
-        } else if (this.engine === 'km') {
-          window.open(`https://km.oa.com/search?q=${this.input}`);
+          this.goto('https://cn.bing.com/search?q=');
         } else if (this.engine === 'github') {
-          window.open(`https://www.github.com/search?q=${this.input}`);
+          this.goto('https://www.github.com/search?q=');
+        } else if (this.engine === 'segmentfault') {
+          this.goto('https://segmentfault.com/search?q=');
+        } else if (this.engine === 'stackoverflow') {
+          this.goto('https://stackoverflow.com/search?q=');
+        } else if (this.engine === 'dribbble') {
+          this.goto('https://dribbble.com/search?q=');
+        } else if (this.engine === 'iconfont' ) {
+          this.goto('http://www.iconfont.cn/search/index?q=')
+        } else if (this.engine === 'huaban') {
+          this.goto('http://huaban.com/search/?q=');
+        } else if (this.engine === 'zhihu') {
+          this.goto('https://www.zhihu.com/search?q=');
+        } else if (this.engine === 'km') {
+          this.goto('https://km.oa.com/search?q=');
+        } else if (this.engine === 'wiki') {
+          this.goto('https://zh.wikipedia.org/wiki/');
+        } else if (this.engine === 'twitter') {
+          this.goto('https://twitter.com/search?q=');
+        } else if (this.engine === 'weibo') {
+          this.goto('https://s.weibo.com/weibo?q=');
+        } else if (this.engine === 'toutiao') {
+          this.goto('https://www.toutiao.com/search/?keyword=');
+        } else if (this.engine === 'youtube') {
+          this.goto('https://www.youtube.com/results?search_query=');
+        } else if (this.engine === 'v') {
+          this.goto('https://v.qq.com/x/search/?q=');
+        } else if (this.engine === 'bilibili') {
+          this.goto('https://search.bilibili.com/all?keyword=');
         }
       } 
       
@@ -90,6 +137,9 @@ export default {
     },
     onTabClick: function () {
       window.localStorage.setItem('currentTabName', this.currentTabName);
+    },
+    goto: function (url) {
+      window.open(url + this.input);
     }
   }
 };
@@ -125,6 +175,17 @@ export default {
 .index .search .el-input-group__prepend {
   background-color: #fff;
   width: 70px;
+}
+
+.index .search .el-input-group__append {
+  background-color: #fff;
+}
+
+.index .search > .el-input__inner,
+.index .search > .el-input__inner:hover,
+.index .search > .el-input__inner:focus {
+  border: 1px solid #dcdfe6;
+  border-right: none;
 }
 
 .index .website {

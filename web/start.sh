@@ -1,5 +1,5 @@
 #!/bin/bash
 echo 'startup start.'
-export NODE_ENV=online && export PORT=10079 && nohup node bin/www &
+export ENV=online && export PORT=$main_port && nohup node /usr/local/app/web/bin/www &
 echo 'startup end.'
 
