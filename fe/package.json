@@ -1,13 +1,12 @@
 {
   "name": "fe",
   "version": "1.0.0",
-  "description": "A Vue.js project",
+  "description": "",
   "author": "",
   "private": true,
   "scripts": {
-    "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
-    "build": "node build/build.js"
+    "start": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
+    "build": "node build/build.js && node deploy.js"
   },
   "dependencies": {
     "element-ui": "^2.4.0",

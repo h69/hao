@@ -1,12 +1,7 @@
 const mysql = require('mysql');
+const config = require('../config/database.json');
 
-const pool = mysql.createPool({
-  host: 'localhost',
-  port: 3306,
-  user: 'root',
-  password: 'root',
-  database: 'db_hao'
-});
+const pool = mysql.createPool(config);
 
 function query(callback) {
   pool.getConnection(function (err, connection) {
@@ -24,7 +19,7 @@ function query(callback) {
 function insert(data, callback) {
   let sql = '';
   for (let i = 0; i < data.length; i++) {
-    sql += `('${data[i].label}', '${data[i].name}', '${data[i].href}'),`
+    sql += `('${data[i].tag}', '${data[i].title}', '${data[i].href}'),`
   }
   sql = sql.substring(0, sql.length - 1);
 

@@ -1,2 +1,4 @@
 # hao
-网址导航。
+Website navigation.
+
+![](./hao.png)

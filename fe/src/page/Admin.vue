@@ -1,19 +1,19 @@
 <template>
   <div class="admin">
     <el-table :data="data">
-      <el-table-column label="网站标签">
+      <el-table-column label="Tag">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.label" spellcheck="false"></el-input>
+          <el-input v-model="scope.row.tag" spellcheck="false"></el-input>
         </template>
       </el-table-column>
 
-      <el-table-column label="网站名称">
+      <el-table-column label="Title">
         <template slot-scope="scope">
-          <el-input v-model="scope.row.name" spellcheck="false"></el-input>
+          <el-input v-model="scope.row.title" spellcheck="false"></el-input>
         </template>
       </el-table-column>
 
-      <el-table-column label="网站地址">
+      <el-table-column label="Href">
         <template slot-scope="scope">
           <el-input v-model="scope.row.href" spellcheck="false"></el-input>
         </template>
@@ -21,13 +21,13 @@
 
       <el-table-column width="160">
         <template slot-scope="scope">
-          <el-button size="mini" @click="onAdd(scope)">添加</el-button>
-          <el-button size="mini" type="danger" @click="onDelete(scope)">删除</el-button>
+          <el-button size="mini" @click="onAdd(scope)">Add</el-button>
+          <el-button size="mini" type="danger" @click="onDelete(scope)">Delete</el-button>
         </template>
       </el-table-column>
     </el-table>
 
-    <el-button class="submit" type="primary" @click="onSubmit">提交</el-button>
+    <el-button class="submit" type="primary" @click="onSubmit">Submit</el-button>
   </div>
 </template>
 
@@ -42,8 +42,8 @@ export default {
   methods: {
     getDefaultData: function () {
       return { 
-        label: '',
-        name: '',
+        tag: '',
+        title: '',
         href: '', 
       };
     },
@@ -58,6 +58,11 @@ export default {
       }
     },
     onSubmit: function () {
+      if (process.env.NODE_ENV === "development") {
+        this.$message({ message: 'Test', type: 'info' });
+        return
+      }
+
       var params = {
         data: this.data,
         p: this.$route.query.p
@@ -66,30 +71,30 @@ export default {
       var $this = this;
       this.$http.post('/api/submit', params).then(function (response) { 
         if (response.body == 'forbidden') {
-          $this.$message({ message: '无访问权限', type: 'error' });
+          $this.$message({ message: 'Forbidden', type: 'error' });
           return;
         }
 
         if (response.body == 'success') {
-          $this.$message({ message: '提交成功', type: 'success' });
+          $this.$message({ message: 'Success', type: 'success' });
         } else {
-          $this.$message({ message: '提交失败', type: 'error' });
+          $this.$message({ message: 'Failure', type: 'error' });
         }
       });
     }
   },
   created: function () {
+    if (process.env.NODE_ENV === "development") {
+      this.data = require('../test/data.json')
+      return
+    }
+
     var params = {
       p: this.$route.query.p
     };
 
     var $this = this;
-    this.$http.post('/api/getAdminData', params).then(function (response) { 
-      if (response.body == 'forbidden') {
-        $this.$message({ message: '无访问权限', type: 'error' });
-        return;
-      } 
-
+    this.$http.post('/api/getData', params).then(function (response) { 
       if (response.body == undefined || response.body.length === 0) {
         $this.data.push($this.getDefaultData());
       } else {
