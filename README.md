@@ -1,4 +1,4 @@
 # hao
-Web navigation.
+Project of Web.
 
 ![](./hao.png)
