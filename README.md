@@ -1,4 +1,4 @@
 # hao
-Web for a simple website navigation.
+Web for website navigation.
 
 ![](./hao.png)
